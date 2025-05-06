@@ -9,24 +9,31 @@ uploaded_file = st.file_uploader("📤 Tải ảnh lên (.png hoặc .jpg)", typ
 
 if uploaded_file is not None:
     try:
+        # Đọc ảnh từ file upload
         image = Image.open(uploaded_file).convert("RGBA")
-        st.image(image, caption="Ảnh đã tải lên", use_container_width=True)
 
+        # Hiển thị ảnh (sử dụng use_column_width để tương thích rộng nhất)
+        st.image(image, caption="Ảnh đã tải lên", use_column_width=True)
+
+        # Tạo kích thước icon tiêu chuẩn
         icon_size = (256, 256)
         resized_image = image.resize(icon_size)
 
+        # Tạo file .ico trong bộ nhớ
         ico_bytes = io.BytesIO()
         resized_image.save(ico_bytes, format='ICO')
         ico_bytes.seek(0)
 
+        # Hiển thị nút tải xuống
         st.success("✅ Đã chuyển đổi thành công!")
         st.download_button(
-            label="⬇️ Tải file .ico",
+            label="⬇️ Tải file icon.ico",
             data=ico_bytes,
             file_name="icon.ico",
             mime="image/x-icon"
         )
+
     except UnidentifiedImageError:
-        st.error("❌ Không thể đọc ảnh. Vui lòng đảm bảo file là ảnh PNG hoặc JPG hợp lệ.")
+        st.error("❌ File bạn tải lên không phải ảnh hợp lệ.")
     except Exception as e:
-        st.error(f"❌ Lỗi khi xử lý ảnh: {e}")
+        st.error(f"❌ Lỗi xử lý: {e}")
